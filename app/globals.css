@@ -1,26 +1,162 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-black: #000000;
+  --color-white: #FFFFFF;
+  --color-cream: #E3DACC;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-black: var(--color-black);
+  --color-white: var(--color-white);
+  --color-cream: var(--color-cream);
+  --font-sans: var(--font-dm-sans);
+  --font-mono-accent: var(--font-ibm-plex-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Reset and base */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-cream);
+  color: var(--color-black);
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
 }
+
+/* Focus states */
+:focus-visible {
+  outline: 2px solid var(--color-black);
+  outline-offset: 2px;
+}
+
+/* Selection */
+::selection {
+  background-color: var(--color-black);
+  color: var(--color-cream);
+}
+
+/* Hero Scrim for ambient text legibility */
+.hero-scrim {
+  position: absolute;
+  top: 50%;
+  left: -120px;
+  transform: translateY(-50%);
+  width: min(1200px, 150vw);
+  height: min(750px, 130vh);
+  background: radial-gradient(ellipse 950px 550px at left center, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.25) 40%, transparent 75%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: -1;
+  overflow: visible;
+}
+
+@media (max-width: 768px) {
+  .hero-scrim {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(650px, 160vw);
+    height: min(550px, 110vh);
+    background: radial-gradient(ellipse 500px 420px at center center, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.25) 40%, transparent 75%);
+    filter: blur(50px);
+  }
+}
+
+/* Ambient Shadow Halo above/behind the header */
+.header-halo {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(1300px, 140vw);
+  height: 180px;
+  background: radial-gradient(
+    ellipse 900px 120px at center 40px,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.14) 45%,
+    transparent 75%
+  );
+  filter: blur(50px);
+  pointer-events: none;
+  z-index: 0;
+  overflow: visible;
+  transition: opacity 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .header-halo {
+    top: -30px;
+    width: min(600px, 150vw);
+    height: 140px;
+    background: radial-gradient(
+      ellipse 450px 90px at center 30px,
+      rgba(0, 0, 0, 0.28) 0%,
+      rgba(0, 0, 0, 0.12) 45%,
+      transparent 75%
+    );
+    filter: blur(40px);
+  }
+}
+
+/* Continuous Ticker Animation */
+@keyframes ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.ticker-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: ticker-scroll 24s linear infinite;
+}
+
+.ticker-track:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation-duration: 60s;
+  }
+}
+
+/* Service Row Hover Animation */
+.service-row {
+  background-color: var(--color-cream);
+  color: var(--color-black);
+  transition: background-color 300ms ease, color 300ms ease;
+  cursor: pointer;
+}
+
+.service-row:hover {
+  background-color: var(--color-black);
+  color: var(--color-cream);
+}
+
+.service-row * {
+  transition: color 300ms ease;
+}
+
+.service-row:hover * {
+  color: var(--color-cream) !important;
+}
+
+
+

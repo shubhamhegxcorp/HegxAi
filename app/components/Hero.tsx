@@ -3,6 +3,8 @@
 import { useSyncExternalStore } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import SpecularButton from './SpecularButton';
+import { useLenis } from './SmoothScroll';
 
 // Dynamically import ShapeWaves to avoid SSR issues with WebGPU
 const ShapeWaves = dynamic(() => import('./ShapeWaves'), {
@@ -24,6 +26,7 @@ const getReducedMotionSnapshot = () => {
 const getReducedMotionServerSnapshot = () => false;
 
 export default function Hero() {
+  const { scrollTo } = useLenis();
   const prefersReducedMotion = useSyncExternalStore(
     subscribeReducedMotion,
     getReducedMotionSnapshot,
@@ -136,25 +139,44 @@ export default function Hero() {
               marginTop: '32px',
             }}
           >
-            <Link
+            <SpecularButton
               href="#book-audit"
-              className="inline-flex items-center justify-center no-underline bg-white text-black focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollTo('#contact', { offset: -110, duration: 1.2 });
+              }}
+              size="lg"
+              radius={9999}
+              baseColor="#00000022"
+              lineColor="#000000"
+              textColor="#000000"
+              tintOpacity={0}
+              intensity={0.7}
+              shineSize={12}
+              shineFade={35}
+              followMouse={true}
+              proximity={220}
+              autoAnimate={false}
+              className="bg-white text-black no-underline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
               style={{
                 borderRadius: '9999px',
                 padding: '14px 28px',
+                backgroundColor: '#ffffff',
+                color: '#000000',
                 fontFamily: 'var(--font-dm-sans), system-ui, sans-serif',
                 fontWeight: 600,
                 fontSize: '15px',
-                transition: 'opacity 0.2s ease',
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.9')}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
             >
               Book a free audit
-            </Link>
+            </SpecularButton>
 
-            <Link
-              href="#how-it-works"
+            <a
+              href="#process"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollTo('#process', { offset: -110, duration: 1.2 });
+              }}
               className="inline-flex items-center justify-center no-underline text-white focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
               style={{
                 padding: '14px 20px',
@@ -176,7 +198,7 @@ export default function Hero() {
               }}
             >
               See how it works
-            </Link>
+            </a>
           </div>
         </div>
       </div>

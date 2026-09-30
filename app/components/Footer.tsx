@@ -1,20 +1,12 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import BlinkingSquares from './BlinkingSquares';
+import { useLenis } from './SmoothScroll';
 
 export default function Footer() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  const { scrollTo } = useLenis();
 
   return (
     <footer
@@ -36,9 +28,9 @@ export default function Footer() {
       >
         <BlinkingSquares
           direction="bottom"
-          gridSize={isMobile ? 42 : 52}
-          squareSize={0.24}
-          fadeStart={0.12}
+          gridSize={32}
+          squareSize={0.3}
+          fadeStart={0.5}
           fadeEnd={0.88}
           falloff={0.85}
           minBrightness={0.4}
@@ -117,36 +109,52 @@ export default function Footer() {
               }}
             >
               <li>
-                <Link
+                <a
                   href="#services"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollTo('#services', { offset: -110, duration: 1.2 });
+                  }}
                   className="text-white no-underline hover:underline underline-offset-4 opacity-85 hover:opacity-100 transition-opacity"
                 >
                   Services
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
+                <a
                   href="#process"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollTo('#process', { offset: -110, duration: 1.2 });
+                  }}
                   className="text-white no-underline hover:underline underline-offset-4 opacity-85 hover:opacity-100 transition-opacity"
                 >
                   Process
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
+                <a
                   href="#faq"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollTo('#faq', { offset: -110, duration: 1.2 });
+                  }}
                   className="text-white no-underline hover:underline underline-offset-4 opacity-85 hover:opacity-100 transition-opacity"
                 >
                   FAQ
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
+                <a
                   href="#contact"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollTo('#contact', { offset: -110, duration: 1.2 });
+                  }}
                   className="text-white no-underline hover:underline underline-offset-4 opacity-85 hover:opacity-100 transition-opacity"
                 >
                   Connect
-                </Link>
+                </a>
               </li>
             </ul>
           </div>

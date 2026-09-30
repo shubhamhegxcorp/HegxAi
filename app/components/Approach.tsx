@@ -4,12 +4,13 @@ export default function Approach() {
   return (
     <section
       id="approach"
-      className="w-full scroll-mt-20"
+      className="w-full"
       style={{
         backgroundColor: 'var(--color-cream)',
         padding: '72px 24px 130px',
         borderTop: '1px solid var(--color-black)',
         borderBottom: '1px solid var(--color-black)',
+        scrollMarginTop: '110px',
       }}
     >
       <div
@@ -27,7 +28,6 @@ export default function Approach() {
         >
           {/* Small mono label */}
           <span
-            className="flex items-center"
             style={{
               fontFamily: 'var(--font-ibm-plex-mono), monospace',
               fontSize: '12px',
@@ -38,15 +38,7 @@ export default function Approach() {
               marginBottom: '24px',
             }}
           >
-            <span>ABOUT</span>
-            <span
-              className="mx-3"
-              style={{ color: 'rgba(0, 0, 0, 0.45)' }}
-              aria-hidden="true"
-            >
-              /
-            </span>
-            <span>OUR APPROACH</span>
+            03 / OUR APPROACH
           </span>
 
           {/* Manifesto paragraph */}

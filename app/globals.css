@@ -24,9 +24,24 @@
 }
 
 html {
-  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+#services,
+#process,
+#approach,
+#faq,
+#contact,
+#connect {
+  scroll-margin-top: 110px;
+}
+
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .process-reveal {
+    opacity: 0;
+    visibility: hidden;
+  }
 }
 
 body {
@@ -84,8 +99,8 @@ body {
   height: 180px;
   background: radial-gradient(
     ellipse 900px 120px at center 40px,
-    rgba(0, 0, 0, 0.3) 0%,
-    rgba(0, 0, 0, 0.14) 45%,
+    rgba(0, 0, 0, 0.18) 0%,
+    rgba(0, 0, 0, 0.08) 45%,
     transparent 75%
   );
   filter: blur(50px);
@@ -102,8 +117,8 @@ body {
     height: 140px;
     background: radial-gradient(
       ellipse 450px 90px at center 30px,
-      rgba(0, 0, 0, 0.28) 0%,
-      rgba(0, 0, 0, 0.12) 45%,
+      rgba(0, 0, 0, 0.17) 0%,
+      rgba(0, 0, 0, 0.07) 45%,
       transparent 75%
     );
     filter: blur(40px);
@@ -137,26 +152,71 @@ body {
   }
 }
 
-/* Service Row Hover Animation */
+/* Service Row Accordion & Hover Color Fill */
 .service-row {
   background-color: var(--color-cream);
   color: var(--color-black);
-  transition: background-color 300ms ease, color 300ms ease;
+  transition: background-color 200ms ease,
+              color 200ms ease,
+              padding 350ms cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
 }
 
-.service-row:hover {
+.service-row * {
+  transition: color 200ms ease;
+}
+
+/* Hover color fill: solid black background with cream text (desktop only) */
+@media (hover: hover) and (pointer: fine) {
+  .service-row:hover {
+    background-color: var(--color-black);
+    color: var(--color-cream);
+  }
+
+  .service-row:hover * {
+    color: var(--color-cream);
+  }
+}
+
+/* Persistent expanded state (active regardless of hover) */
+.service-row.service-row--expanded {
   background-color: var(--color-black);
   color: var(--color-cream);
 }
 
-.service-row * {
-  transition: color 300ms ease;
+.service-row.service-row--expanded * {
+  color: var(--color-cream);
 }
 
-.service-row:hover * {
+/* Discuss Project Button in Expanded Row */
+.service-discuss-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid var(--color-cream);
+  background-color: transparent;
   color: var(--color-cream) !important;
+  padding: 12px 28px;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
 }
 
+.service-discuss-btn:hover {
+  background-color: var(--color-cream);
+  color: var(--color-black) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .service-row,
+  .service-row *,
+  .service-discuss-btn {
+    transition: none !important;
+  }
+}
 
 

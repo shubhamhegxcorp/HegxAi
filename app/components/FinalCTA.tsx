@@ -1,25 +1,30 @@
 'use client';
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
-
-const SandParticles = dynamic(() => import('./SandParticles'), { ssr: false });
+import SandParticles from './SandParticles';
+import SpecularButton from './SpecularButton';
 
 export default function FinalCTA() {
+  ReactDOM.preload('/assets/robot-hand-clean.png', { as: 'image', crossOrigin: 'anonymous' });
+  ReactDOM.preload('/assets/human-hand-clean.png', { as: 'image', crossOrigin: 'anonymous' });
+
   return (
     <section
       id="contact"
-      className="w-full relative scroll-mt-20 overflow-hidden flex flex-col items-center justify-center min-h-[580px] md:min-h-[660px] lg:min-h-[720px]"
+      className="w-full relative overflow-hidden flex flex-col items-center justify-center min-h-[580px] md:min-h-[660px] lg:min-h-[720px]"
       style={{
         backgroundColor: '#E3DACC',
         borderTop: '1px solid var(--color-black)',
         borderBottom: '1px solid var(--color-black)',
         padding: '60px 24px',
+        scrollMarginTop: '110px',
       }}
     >
-      {/* Anchor for #connect as well */}
-      <span id="connect" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
+      {/* Anchor for #connect and #book-audit as well */}
+      <span id="connect" className="absolute -top-[110px] pointer-events-none" aria-hidden="true" />
+      <span id="book-audit" className="absolute -top-[110px] pointer-events-none" aria-hidden="true" />
 
       {/* Left Hand: Robot Hand (Left ~35% width, vertically centered, reaching inward toward center) */}
       <div
@@ -104,21 +109,33 @@ export default function FinalCTA() {
         </p>
 
         {/* Primary button */}
-        <Link
+        <SpecularButton
           href="#book-audit"
-          className="pointer-events-auto inline-flex items-center justify-center no-underline hover:opacity-85 transition-opacity focus-visible:outline-2 focus-visible:outline-black focus-visible:outline-offset-2"
+          size="lg"
+          radius={9999}
+          baseColor="#00000022"
+          lineColor="#000000"
+          textColor="#000000"
+          tintOpacity={0}
+          intensity={0.7}
+          shineSize={12}
+          shineFade={35}
+          followMouse={true}
+          proximity={220}
+          autoAnimate={false}
+          className="pointer-events-auto bg-white text-black no-underline focus-visible:outline-2 focus-visible:outline-black focus-visible:outline-offset-2"
           style={{
             borderRadius: '9999px',
             padding: '16px 36px',
+            backgroundColor: '#ffffff',
+            color: '#000000',
             fontFamily: 'var(--font-dm-sans), system-ui, sans-serif',
             fontWeight: 600,
             fontSize: '15px',
-            backgroundColor: 'var(--color-black)',
-            color: 'var(--color-white)',
           }}
         >
           Book a free audit
-        </Link>
+        </SpecularButton>
       </div>
     </section>
   );

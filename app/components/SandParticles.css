@@ -1,0 +1,33 @@
+.sand-particles > canvas {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.sand-particles__placeholder {
+  position: absolute;
+  inset: 1%;
+  width: 98%;
+  height: 98%;
+  object-fit: contain;
+  filter: brightness(0);
+  opacity: 0.12;
+  pointer-events: none;
+  transition: opacity 300ms ease;
+}
+
+.sand-particles[data-ready='true'] > canvas {
+  opacity: 1;
+}
+
+.sand-particles[data-ready='true'] .sand-particles__placeholder {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sand-particles > canvas,
+  .sand-particles__placeholder {
+    transition: none;
+  }
+}

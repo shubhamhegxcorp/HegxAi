@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
+import './SandParticles.css';
 
 const DEFAULT_SHADE_COLORS = ['#0A0A0A', '#55524D', '#8E8981', '#BDB7AC'] as const;
 const DEFAULT_SHADE_THRESHOLDS = [0.25, 0.50, 0.75] as const;
@@ -48,6 +49,8 @@ export const SandParticles: React.FC<SandParticlesProps> = ({
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+    let disposed = false;
+    container.dataset.ready = 'false';
 
     let width = container.clientWidth || 400;
     let height = container.clientHeight || 500;
@@ -62,8 +65,8 @@ export const SandParticles: React.FC<SandParticlesProps> = ({
       antialias: true,
       powerPreference: 'high-performance',
     });
-    renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(width, height);
     renderer.setClearColor(0x000000, 0); // Clear transparent background, no white box
     container.appendChild(renderer.domElement);
 
@@ -190,6 +193,10 @@ export const SandParticles: React.FC<SandParticlesProps> = ({
     loader.load(
       imageSrc,
       (texture) => {
+        if (disposed) {
+          texture.dispose();
+          return;
+        }
         loadedTexture = texture;
         texture.minFilter = THREE.LinearFilter;
         texture.magFilter = THREE.LinearFilter;
@@ -317,7 +324,7 @@ export const SandParticles: React.FC<SandParticlesProps> = ({
       },
       undefined,
       (err) => {
-        console.error('[SandParticles] Failed to load image at:', imageSrc, err);
+        if (!disposed) console.error('[SandParticles] Failed to load image at:', imageSrc, err);
       }
     );
 
@@ -325,7 +332,7 @@ export const SandParticles: React.FC<SandParticlesProps> = ({
     let idleFrames = 0;
 
     const tick = () => {
-      if (!geometry || !points) return;
+      if (disposed || !geometry || !points) return;
 
       const posAttr = geometry.attributes.position as THREE.BufferAttribute;
       const pos = posAttr.array as Float32Array;
@@ -392,6 +399,9 @@ export const SandParticles: React.FC<SandParticlesProps> = ({
 
       posAttr.needsUpdate = true;
       renderer.render(scene, camera);
+      if (container.dataset.ready !== 'true') {
+        container.dataset.ready = 'true';
+      }
 
       // Auto-sleep when settled
       if (!isMouseOver && maxMovement < 0.0004) {
@@ -408,6 +418,7 @@ export const SandParticles: React.FC<SandParticlesProps> = ({
     };
 
     const wakeUp = () => {
+      if (disposed) return;
       if (isSleeping) {
         isSleeping = false;
         idleFrames = 0;
@@ -456,6 +467,7 @@ export const SandParticles: React.FC<SandParticlesProps> = ({
 
     // 8. Cleanup on unmount
     return () => {
+      disposed = true;
       cancelAnimationFrame(animFrameId);
       container.removeEventListener('pointermove', handlePointerMove);
       container.removeEventListener('pointerleave', handlePointerLeave);
@@ -469,6 +481,7 @@ export const SandParticles: React.FC<SandParticlesProps> = ({
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
+      container.dataset.ready = 'false';
     };
   }, [
     imageSrc,
@@ -489,9 +502,21 @@ export const SandParticles: React.FC<SandParticlesProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`relative w-full h-full overflow-hidden select-none ${className}`}
+      className={`sand-particles relative w-full h-full overflow-hidden select-none ${className}`}
+      data-ready="false"
       style={{ touchAction: 'none' }}
-    />
+    >
+      {/* Reuse the exact PNG that TextureLoader samples, including its alpha. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={imageSrc}
+        alt=""
+        aria-hidden="true"
+        crossOrigin="anonymous"
+        decoding="async"
+        className="sand-particles__placeholder"
+      />
+    </div>
   );
 };
 

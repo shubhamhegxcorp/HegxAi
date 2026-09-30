@@ -36,11 +36,11 @@ export default function TickerStrip() {
                 textTransform: 'uppercase',
               }}
             >
-              <span className="mx-6 text-neutral-500 font-light" aria-hidden="true">/</span>
+              <span className="text-neutral-500 font-light" style={{ padding: '0 14px' }} aria-hidden="true">/</span>
               {item}
             </span>
           ))}
-          <span className="mx-6 text-neutral-500 font-light" aria-hidden="true">/</span>
+          <span className="text-neutral-500 font-light" style={{ padding: '0 14px' }} aria-hidden="true">/</span>
         </div>
 
         {/* Set 2 (duplicate for seamless loop) */}
@@ -57,11 +57,11 @@ export default function TickerStrip() {
                 textTransform: 'uppercase',
               }}
             >
-              <span className="mx-6 text-neutral-500 font-light" aria-hidden="true">/</span>
+              <span className="text-neutral-500 font-light" style={{ padding: '0 14px' }} aria-hidden="true">/</span>
               {item}
             </span>
           ))}
-          <span className="mx-6 text-neutral-500 font-light" aria-hidden="true">/</span>
+          <span className="text-neutral-500 font-light" style={{ padding: '0 14px' }} aria-hidden="true">/</span>
         </div>
       </div>
     </div>

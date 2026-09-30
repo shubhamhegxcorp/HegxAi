@@ -22,6 +22,8 @@ export const metadata: Metadata = {
     "Workflow automation and AI agents, built around how your business actually runs. HEGXAI automates the work so you can focus on growth.",
 };
 
+import SmoothScroll from "./components/SmoothScroll";
+
 export default function RootLayout({
   children,
 }: {
@@ -32,7 +34,9 @@ export default function RootLayout({
       lang="en"
       className={`${dmSans.variable} ${ibmPlexMono.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        <SmoothScroll>{children}</SmoothScroll>
+      </body>
     </html>
   );
 }

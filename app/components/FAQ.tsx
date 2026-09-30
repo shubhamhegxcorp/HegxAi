@@ -36,7 +36,7 @@ const FAQ_ITEMS: FAQItem[] = [
 ];
 
 export default function FAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const toggleItem = (index: number) => {
     setOpenIndex((prev) => (prev === index ? null : index));
@@ -45,10 +45,11 @@ export default function FAQ() {
   return (
     <section
       id="faq"
-      className="w-full scroll-mt-20"
+      className="w-full"
       style={{
         backgroundColor: 'var(--color-cream)',
         padding: '120px 24px 140px',
+        scrollMarginTop: '110px',
       }}
     >
       <div
@@ -63,7 +64,6 @@ export default function FAQ() {
           <div className="lg:col-span-5 lg:sticky lg:top-28 flex flex-col items-start">
             {/* Small mono label */}
             <span
-              className="flex items-center"
               style={{
                 fontFamily: 'var(--font-ibm-plex-mono), monospace',
                 fontSize: '12px',
@@ -74,15 +74,7 @@ export default function FAQ() {
                 marginBottom: '16px',
               }}
             >
-              <span>04</span>
-              <span
-                className="mx-3"
-                style={{ color: 'rgba(0, 0, 0, 0.45)' }}
-                aria-hidden="true"
-              >
-                /
-              </span>
-              <span>A FEW GOOD QUESTIONS</span>
+              04 / A FEW GOOD QUESTIONS
             </span>
 
             {/* Headline */}

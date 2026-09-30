@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { gsap } from 'gsap';
+import SpecularButton from './SpecularButton';
+import { useLenis } from './SmoothScroll';
 
 const NAV_LINKS = [
   { label: 'Services', href: '#services' },
@@ -18,12 +20,27 @@ export default function Header() {
   const tlRefs = useRef<any[]>([]);
   const activeTweenRefs = useRef<any[]>([]);
 
+  const { lenis, scrollTo } = useLenis();
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
+
+    if (lenis) {
+      const onLenisScroll = (e: any) => {
+        const currentScroll = e?.scroll ?? window.scrollY;
+        setScrolled(currentScroll > 50);
+      };
+      lenis.on('scroll', onLenisScroll);
+      return () => {
+        window.removeEventListener('scroll', onScroll);
+        lenis.off('scroll', onLenisScroll);
+      };
+    }
+
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  }, [lenis]);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -147,30 +164,30 @@ export default function Header() {
           style={{
             maxWidth: '1200px',
             borderRadius: '9999px',
-            backgroundColor: menuOpen ? 'transparent' : 'rgba(227, 218, 204, 0.65)',
-            backdropFilter: menuOpen ? 'none' : 'blur(20px)',
-            WebkitBackdropFilter: menuOpen ? 'none' : 'blur(20px)',
+            backgroundColor: menuOpen ? 'transparent' : 'rgba(227, 218, 204, 0.78)',
+            backdropFilter: menuOpen ? 'none' : 'blur(26px) saturate(140%)',
+            WebkitBackdropFilter: menuOpen ? 'none' : 'blur(26px) saturate(140%)',
             border: menuOpen ? '1px solid transparent' : '1px solid var(--color-black)',
             padding: scrolled ? '6px 8px 6px 18px' : '10px 10px 10px 22px',
             transition: 'padding 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease, -webkit-backdrop-filter 0.3s ease',
           }}
         >
-          {/* Left: "HEGXAI" wordmark in a pill */}
+          {/* Left: "HEGXAI" wordmark in a solid black pill */}
           <Link
             href="/"
             className="flex items-center shrink-0 focus-visible:outline-2 focus-visible:outline-black focus-visible:outline-offset-2"
             style={{
-              border: menuOpen ? '1px solid var(--color-white)' : '1px solid var(--color-black)',
+              border: menuOpen ? '1px solid var(--color-white)' : '1px solid #000000',
               borderRadius: '9999px',
               padding: '6px 16px',
-              backgroundColor: 'transparent',
+              backgroundColor: '#000000',
               fontFamily: 'var(--font-dm-sans), system-ui, sans-serif',
               fontWeight: 600,
               fontSize: '14px',
               letterSpacing: '0.04em',
-              color: menuOpen ? 'var(--color-white)' : 'var(--color-black)',
+              color: '#E3DACC',
               textDecoration: 'none',
-              transition: 'color 0.3s ease, border-color 0.3s ease',
+              transition: 'color 0.3s ease, border-color 0.3s ease, background-color 0.3s ease',
             }}
             aria-label="HEGXAI Home"
           >
@@ -180,10 +197,14 @@ export default function Header() {
           {/* Middle: Services / Pricing / About with hover-circle-fill animation */}
           <div className="hidden md:flex items-center gap-1">
             {NAV_LINKS.map((link, i) => (
-              <Link
+              <a
                 key={link.label}
                 href={link.href}
                 className="pill-nav-item"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollTo(link.href, { offset: -110, duration: 1.2 });
+                }}
                 onMouseEnter={() => handleEnter(i)}
                 onMouseLeave={() => handleLeave(i)}
                 style={{
@@ -259,32 +280,47 @@ export default function Header() {
                     {link.label}
                   </span>
                 </span>
-              </Link>
+              </a>
             ))}
           </div>
 
           {/* Right: "Connect" button + Mobile Hamburger */}
           <div className="flex items-center gap-3">
-            {/* Connect Button (desktop) */}
-            <Link
-              href="#connect"
-              className="hidden md:inline-flex items-center justify-center bg-black text-white no-underline focus-visible:outline-2 focus-visible:outline-black focus-visible:outline-offset-2"
-              style={{
-                borderRadius: '9999px',
-                padding: '10px 24px',
-                border: 'none',
-                backgroundColor: 'var(--color-black)',
-                color: 'var(--color-white)',
-                fontFamily: 'var(--font-dm-sans), system-ui, sans-serif',
-                fontWeight: 500,
-                fontSize: '14px',
-                transition: 'opacity 0.2s ease',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.85')}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
-            >
-              Connect
-            </Link>
+            {/* Connect Button (desktop) with Specular rim-shine */}
+            <div className="hidden md:inline-flex">
+              <SpecularButton
+                href="#connect"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollTo('#connect', { offset: -110, duration: 1.2 });
+                }}
+                size="sm"
+                radius={9999}
+                baseColor="#E3DACC"
+                lineColor="#ffffff"
+                textColor="#E3DACC"
+                tintOpacity={0}
+                blur={0}
+                intensity={0.9}
+                shineSize={12}
+                shineFade={35}
+                followMouse={true}
+                proximity={200}
+                autoAnimate={false}
+                className="bg-black text-[#E3DACC] no-underline focus-visible:outline-2 focus-visible:outline-black focus-visible:outline-offset-2"
+                style={{
+                  borderRadius: '9999px',
+                  padding: '10px 24px',
+                  backgroundColor: 'var(--color-black)',
+                  color: '#E3DACC',
+                  fontFamily: 'var(--font-dm-sans), system-ui, sans-serif',
+                  fontWeight: 500,
+                  fontSize: '14px',
+                }}
+              >
+                Connect
+              </SpecularButton>
+            </div>
 
             {/* Hamburger (mobile) */}
             <button
@@ -370,10 +406,14 @@ export default function Header() {
       >
         <nav className="flex flex-col items-center gap-10">
           {NAV_LINKS.map((link) => (
-            <Link
+            <a
               key={link.label}
               href={link.href}
-              onClick={closeMenu}
+              onClick={(e) => {
+                e.preventDefault();
+                closeMenu();
+                scrollTo(link.href, { offset: -110, duration: 1.2 });
+              }}
               className="text-white no-underline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-4"
               style={{
                 fontFamily: 'var(--font-dm-sans), system-ui, sans-serif',
@@ -385,11 +425,15 @@ export default function Header() {
               onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
             >
               {link.label}
-            </Link>
+            </a>
           ))}
-          <Link
+          <a
             href="#connect"
-            onClick={closeMenu}
+            onClick={(e) => {
+              e.preventDefault();
+              closeMenu();
+              scrollTo('#connect', { offset: -110, duration: 1.2 });
+            }}
             className="text-black no-underline bg-white flex items-center justify-center focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-4"
             style={{
               borderRadius: '9999px',
@@ -404,7 +448,7 @@ export default function Header() {
             onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
           >
             Connect
-          </Link>
+          </a>
         </nav>
       </div>
     </>

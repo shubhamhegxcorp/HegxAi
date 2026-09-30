@@ -1,6 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 const STEPS = [
   {
@@ -21,14 +23,56 @@ const STEPS = [
 ];
 
 export default function Process() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useLayoutEffect(() => {
+    const section = sectionRef.current;
+    if (!section || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const context = gsap.context(() => {
+      const header = section.querySelector<HTMLElement>('[data-process-header]');
+      const columns = Array.from(section.querySelectorAll<HTMLElement>('[data-process-column]'));
+      const numbers = columns.map((column) => column.querySelector<HTMLElement>('[data-process-number]'));
+
+      if (!header || numbers.some((number) => !number)) {
+        return;
+      }
+
+      gsap.set(header, { autoAlpha: 0, y: 20 });
+      gsap.set(columns, { autoAlpha: 0, y: 30 });
+      gsap.set(numbers, { scale: 0.9, transformOrigin: 'center center' });
+
+      const timeline = gsap.timeline({ paused: true });
+      timeline
+        .to(header, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 0)
+        .to(columns, { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.12, ease: 'power2.out' }, 0.35)
+        .to(numbers, { scale: 1, duration: 0.5, stagger: 0.12, ease: 'power2.out' }, 0.35);
+
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top 80%',
+        once: true,
+        onEnter: () => timeline.play(),
+      });
+    }, section);
+
+    return () => context.revert();
+  }, []);
+
   return (
     <section
+      ref={sectionRef}
       id="process"
-      className="w-full scroll-mt-20"
+      className="w-full"
       style={{
         backgroundColor: 'var(--color-cream)',
         padding: '80px 24px 110px',
         borderTop: '1px solid var(--color-black)',
+        scrollMarginTop: '110px',
       }}
     >
       <div
@@ -39,7 +83,7 @@ export default function Process() {
         }}
       >
         {/* Header row */}
-        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between w-full pb-6 gap-3">
+        <div data-process-header className="process-reveal flex flex-col sm:flex-row sm:items-baseline justify-between w-full pb-6 gap-3">
           <h2
             style={{
               fontFamily: 'var(--font-dm-sans), system-ui, sans-serif',
@@ -63,7 +107,7 @@ export default function Process() {
               color: 'var(--color-black)',
             }}
           >
-            FROM FIRST CONVERSATION TO A SYSTEM YOUR TEAM CAN RELY ON.
+            02 / FROM FIRST CONVERSATION TO A SYSTEM YOUR TEAM CAN RELY ON.
           </span>
         </div>
 
@@ -85,7 +129,8 @@ export default function Process() {
             return (
               <div
                 key={step.number}
-                className={`flex flex-col justify-start ${
+                data-process-column
+                className={`process-reveal flex flex-col justify-start ${
                   !isLast ? 'md:border-r md:border-black' : ''
                 } ${!isLast ? 'border-b md:border-b-0 border-black' : ''}`}
                 style={{
@@ -97,6 +142,7 @@ export default function Process() {
               >
                 {/* Large Number */}
                 <span
+                  data-process-number
                   style={{
                     fontFamily: 'var(--font-dm-sans), system-ui, sans-serif',
                     fontWeight: 700,
@@ -127,11 +173,11 @@ export default function Process() {
                 {/* Description */}
                 <p
                   style={{
-                    fontFamily: 'var(--font-ibm-plex-mono), monospace',
+                    fontFamily: 'var(--font-dm-sans), system-ui, sans-serif',
                     fontWeight: 400,
-                    fontSize: '13px',
-                    lineHeight: 1.6,
-                    color: '#222222',
+                    fontSize: '15px',
+                    lineHeight: 1.5,
+                    color: 'rgba(0, 0, 0, 0.8)',
                     margin: 0,
                     maxWidth: '320px',
                   }}
